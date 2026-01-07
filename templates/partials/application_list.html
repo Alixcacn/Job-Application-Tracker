@@ -1,0 +1,59 @@
+<div id="application-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pb-20">
+    {% for app in applications %}
+    <div class="card bg-base-100 shadow-md compact hover:shadow-lg transition-shadow">
+        <div class="card-body">
+            <div class="flex justify-between items-start">
+                <h3 class="card-title text-primary text-lg font-bold">{{ app.job_title }}</h3>
+                <div
+                    class="badge {{ 'badge-success' if app.current_status == 'Offer' else 'badge-error' if app.current_status == 'Rejected' else 'badge-warning' if 'Interview' in app.current_status else 'badge-primary' }} badge-outline font-bold">
+                    {{ app.current_status }}
+                </div>
+            </div>
+
+            <p class="text-base font-semibold mt-1">{{ app.company }}</p>
+            <div class="flex items-center gap-1 opacity-70 mb-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <span class="text-xs">{{ app.location or 'Remote' }}</span>
+            </div>
+
+            <div class="divider my-1"></div>
+
+            <div class="grid grid-cols-2 gap-2 text-xs">
+                <div>
+                    <span class="font-semibold">Applied:</span> {{ app.date_applied.strftime('%Y-%m-%d') }}
+                </div>
+                {% if app.next_follow_up_date %}
+                <div class="text-warning">
+                    <span class="font-semibold">Follow-up:</span> {{ app.next_follow_up_date.strftime('%Y-%m-%d') }}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="card-actions justify-end mt-2">
+                {% if app.job_link %}
+                <a href="{{ app.job_link }}" target="_blank" class="btn btn-xs btn-outline btn-info">Link</a>
+                {% endif %}
+                <button class="btn btn-xs btn-ghost" hx-get="/applications/{{ app.id }}/edit"
+                    hx-target="#edit_job_modal_content" onclick="document.getElementById('edit_job_modal').showModal()">
+                    Edit
+                </button>
+                <button class="btn btn-xs btn-outline btn-error" hx-delete="/applications/{{ app.id }}/delete"
+                    hx-target="#application-list" hx-swap="outerHTML"
+                    hx-confirm="Are you sure you want to delete this application?">
+                    Delete
+                </button>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-span-full text-center py-10 opacity-50">
+        No applications found. Start by adding one!
+    </div>
+    {% endfor %}
+</div>

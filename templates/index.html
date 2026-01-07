@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="navbar bg-base-100 mb-4">
+    <div class="flex-1">
+        <h1 class="text-2xl font-bold">Your Applications</h1>
+    </div>
+    <div class="flex-none gap-2">
+        <a href="{{ url_for('export_data') }}" class="btn btn-sm btn-outline btn-accent">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+            Export
+        </a>
+        <button class="btn btn-sm btn-outline btn-secondary"
+            onclick="document.getElementById('import_modal').showModal()">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+            </svg>
+            Import
+        </button>
+        <div class="badge badge-primary">{{ user.username }}</div>
+    </div>
+</div>
+
+<!-- Application List -->
+{% include 'partials/application_list.html' %}
+
+<!-- Add Job Modal -->
+<dialog id="add_job_modal" class="modal modal-bottom sm:modal-middle">
+    <div class="modal-box">
+        <h3 class="font-bold text-lg mb-4">Add New Application</h3>
+        {% include 'partials/add_job_form.html' %}
+    </div>
+    <form method="dialog" class="modal-backdrop">
+        <button>close</button>
+    </form>
+</dialog>
+
+<!-- Edit Job Modal -->
+<dialog id="edit_job_modal" class="modal modal-bottom sm:modal-middle">
+    <div class="modal-box">
+        <h3 class="font-bold text-lg mb-4">Edit Application</h3>
+        <div id="edit_job_modal_content">
+            <!-- Content loaded via HTMX -->
+            <div class="flex justify-center p-4">
+                <span class="loading loading-spinner loading-md"></span>
+            </div>
+        </div>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+        <button>close</button>
+    </form>
+</dialog>
+
+<!-- Import Modal -->
+<dialog id="import_modal" class="modal modal-bottom sm:modal-middle">
+    <div class="modal-box">
+        <h3 class="font-bold text-lg mb-4">Import from Excel</h3>
+        <p class="text-sm opacity-70 mb-4">Upload a .xlsx file with columns: Company, Job Title, etc.</p>
+        <form action="{{ url_for('import_data') }}" method="POST" enctype="multipart/form-data">
+            <input type="file" name="file" class="file-input file-input-bordered w-full mb-4" accept=".xlsx" required />
+            <div class="modal-action">
+                <button type="submit" class="btn btn-primary">Upload & Import</button>
+                <button type="button" class="btn"
+                    onclick="document.getElementById('import_modal').close()">Cancel</button>
+            </div>
+        </form>
+    </div>
+    <form method="dialog" class="modal-backdrop">
+        <button>close</button>
+    </form>
+</dialog>
+{% endblock %}

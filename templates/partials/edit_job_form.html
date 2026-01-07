@@ -1,0 +1,121 @@
+<form hx-post="/applications/{{ app.id }}/edit" hx-target="#application-list" hx-swap="outerHTML"
+    hx-on::after-request="if(event.detail.successful) { document.getElementById('edit_job_modal').close(); }">
+
+    <!-- Row 1: Company, Job Title -->
+    <div class="grid grid-cols-2 gap-4">
+        <div class="form-control">
+            <label class="label"><span class="label-text">Company *</span></label>
+            <input type="text" name="company" value="{{ app.company }}" class="input input-bordered w-full" required />
+        </div>
+        <div class="form-control">
+            <label class="label"><span class="label-text">Job Title *</span></label>
+            <input type="text" name="job_title" value="{{ app.job_title }}" class="input input-bordered w-full"
+                required />
+        </div>
+    </div>
+
+    <!-- Row 2: Location, Status -->
+    <div class="grid grid-cols-2 gap-4 mt-2">
+        <div class="form-control">
+            <label class="label"><span class="label-text">Location</span></label>
+            <input type="text" name="location" value="{{ app.location or '' }}" class="input input-bordered w-full" />
+        </div>
+        <div class="form-control">
+            <label class="label"><span class="label-text">Current Status</span></label>
+            <select name="current_status" class="select select-bordered w-full">
+                <option value="Applied" {% if app.current_status=='Applied' %}selected{% endif %}>Applied</option>
+                <option value="OA" {% if app.current_status=='OA' %}selected{% endif %}>OA</option>
+                <option value="Phone Screen" {% if app.current_status=='Phone Screen' %}selected{% endif %}>Phone Screen
+                </option>
+                <option value="Technical" {% if app.current_status=='Technical' %}selected{% endif %}>Technical</option>
+                <option value="Onsite" {% if app.current_status=='Onsite' %}selected{% endif %}>Onsite</option>
+                <option value="Offer" {% if app.current_status=='Offer' %}selected{% endif %}>Offer</option>
+                <option value="Rejected" {% if app.current_status=='Rejected' %}selected{% endif %}>Rejected</option>
+                <option value="Ghosted" {% if app.current_status=='Ghosted' %}selected{% endif %}>Ghosted</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Row 3: Date Applied, Last Contacted -->
+    <div class="grid grid-cols-2 gap-4 mt-2">
+        <div class="form-control">
+            <label class="label"><span class="label-text">Date Applied</span></label>
+            <input type="date" name="date_applied"
+                value="{{ app.date_applied.strftime('%Y-%m-%d') if app.date_applied else '' }}"
+                class="input input-bordered w-full" />
+        </div>
+        <div class="form-control">
+            <label class="label"><span class="label-text">Last Contacted</span></label>
+            <input type="date" name="last_contacted_date"
+                value="{{ app.last_contacted_date.strftime('%Y-%m-%d') if app.last_contacted_date else '' }}"
+                class="input input-bordered w-full" />
+        </div>
+    </div>
+
+    <!-- Row 4: Source, Resume Version -->
+    <div class="grid grid-cols-2 gap-4 mt-2">
+        <div class="form-control">
+            <label class="label"><span class="label-text">Source</span></label>
+            <input type="text" name="source" value="{{ app.source or '' }}" placeholder="LinkedIn, Indeed..."
+                class="input input-bordered w-full" />
+        </div>
+        <div class="form-control">
+            <label class="label"><span class="label-text">Resume Version</span></label>
+            <input type="text" name="resume_version" value="{{ app.resume_version or '' }}"
+                placeholder="v1.0, SWE Resume..." class="input input-bordered w-full" />
+        </div>
+    </div>
+
+    <!-- Row 5: Link, Salary -->
+    <div class="grid grid-cols-2 gap-4 mt-2">
+        <div class="form-control">
+            <label class="label"><span class="label-text">Job Link/JD</span></label>
+            <input type="url" name="job_link" value="{{ app.job_link or '' }}" class="input input-bordered w-full"
+                placeholder="https://..." />
+        </div>
+        <div class="form-control">
+            <label class="label"><span class="label-text">Salary/TC Range</span></label>
+            <input type="text" name="salary_range" value="{{ app.salary_range or '' }}"
+                class="input input-bordered w-full" />
+        </div>
+    </div>
+
+    <!-- Row 6: Recruiter, Referral -->
+    <div class="grid grid-cols-2 gap-4 mt-2">
+        <div class="form-control">
+            <label class="label"><span class="label-text">Recruiter/HM</span></label>
+            <input type="text" name="recruiter_info" value="{{ app.recruiter_info or '' }}"
+                class="input input-bordered w-full" />
+        </div>
+        <div class="form-control">
+            <label class="label"><span class="label-text">Referral/Contact</span></label>
+            <input type="text" name="referral_contact" value="{{ app.referral_contact or '' }}"
+                class="input input-bordered w-full" />
+        </div>
+    </div>
+
+    <!-- Row 7: Priority, Follow Up (Extra) -->
+    <div class="grid grid-cols-2 gap-4 mt-2">
+        <div class="form-control">
+            <label class="label"><span class="label-text">Priority (1-10)</span></label>
+            <input type="number" name="priority" min="1" max="10" value="{{ app.priority or 5 }}"
+                class="input input-bordered w-full" />
+        </div>
+        <div class="form-control">
+            <label class="label"><span class="label-text">Next Follow Up</span></label>
+            <input type="date" name="next_follow_up_date"
+                value="{{ app.next_follow_up_date.strftime('%Y-%m-%d') if app.next_follow_up_date else '' }}"
+                class="input input-bordered w-full" />
+        </div>
+    </div>
+
+    <div class="form-control mt-2">
+        <label class="label"><span class="label-text">Interview Notes</span></label>
+        <textarea name="notes" class="textarea textarea-bordered h-20">{{ app.notes or '' }}</textarea>
+    </div>
+
+    <div class="modal-action">
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+        <button type="button" class="btn" onclick="document.getElementById('edit_job_modal').close()">Cancel</button>
+    </div>
+</form>
